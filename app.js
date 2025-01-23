@@ -343,3 +343,52 @@ function initMap() {
 
 // Call the function to initialize the map
 initMap();
+
+
+
+$(document).ready(function () {
+    // Handle user query submission
+    $('#askButton').on('click', function () {
+        var query = $('#userQuery').val();
+        if(query.trim() !== '') {
+            appendMessage('user', query);
+            $('#userQuery').val(''); // Clear input after sending
+
+            // Make an AJAX call to the server
+            $.ajax({
+                url: 'http://localhost:3000/',  // This should be your server endpoint
+                type: 'POST',
+                data: { message: query },
+                success: function(response) {
+                    // Assuming the server sends back a response in JSON format with a 'message' field
+                    // Remove ' BACK' if present or handle as needed
+                    var aiResponse = response.message.replace(' BACK', '');
+                    appendMessage('ai', aiResponse);
+                },
+                error: function(xhr, status, error) {
+                    appendMessage('ai', 'Error: Could not get response from server.');
+                    console.error('Error:', error);
+                }
+            });
+        }
+    });
+
+    function appendMessage(sender, message) {
+        var chatWindow = $('#chatWindow');
+        var messageClass = sender === 'ai' ? 'ai-message' : 'user-message';
+        chatWindow.append('<div class="chat-message"><div class="' + messageClass + '">' + message + '</div></div>');
+        chatWindow.scrollTop(chatWindow[0].scrollHeight); // Scroll to bottom
+    }
+
+    // Handle sensor data upload (Unchanged)
+    $('#uploadForm').on('submit', function (e) {
+        e.preventDefault();
+        var formData = new FormData();
+        formData.append('file', $('#fileInput')[0].files[0]);
+
+        // Simulating AJAX call for file upload
+        setTimeout(function() {
+            alert("Data uploaded successfully (Simulated)");
+        }, 1000);
+    });
+});
