@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expert System Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="style.css">
+    
+<!-- Include Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+
+<!-- Include Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+
+    
+</head>
+<body>
+    <header class="header">
+        <h2>Expert System Dashboard</h2>
+        <div>
+            <!-- <img src="https://via.placeholder.com/40" alt="Logo" />
+            <span style="color: #b0c3d9; margin-left: 10px;">User</span>
+            <span style="color: #b0c3d9; margin-left: 20px;">Settings</span> -->
+        </div>
+    </header>
+
+    <div class="dashboard">
+        <!-- Left Sidebar -->
+        <div class="card sidebar-left">
+            <div class="card-header">Navigation</div>
+            <div class="nav flex-column">
+                <a class="nav-link active" href="#sensor-data">Sensor Data</a>
+                <a class="nav-link" href="#alerts">Alerts</a>
+                <a class="nav-link" href="#query">Query System</a>
+                <a class="nav-link" href="#upload">Knowledge Acquisition</a>
+                <a class="nav-link" href="#settings">Settings</a>
+                <a class="nav-link" href="#profile">Profile</a>
+            </div>
+        </div>
+
+        <!-- Main Content Left -->
+<div class="card main-content-left">
+    <div class="card-header">Current Weather & Forecast</div>
+    <div class="card-body" id="current-weather">
+        <div id="weather-info">
+            <h5 id="city-name"></h5>
+            <p id="metric"></p>
+            <p id="weather-main"></p>
+            <p>Humidity: <span id="humidity"></span>%</p>
+            <p>Feels Like: <span id="feels-like"></span>°</p>
+            <p>Min Temp: <span id="temp-min-today"></span></p>
+            <p>Max Temp: <span id="temp-max-today"></span></p>
+            <img src="" alt="Weather Icon" width="50" height="50" style="border-radius: 50%;" class="weather-icon">
+        </div>
+        <div id="forecast-box"></div> <!-- Correct -->
+
+        <!-- Map Section -->
+<div id="map" style="height: 300px; width: 100%; margin-top: 20px;"></div>
+    </div>
+</div>
+
+
+       <!-- Main Content Right -->
+<!-- Main Content Right -->
+<div class="card main-content-right">
+    <div class="card-header">Sensor Charts</div>
+    <canvas id="waterLevelChart" width="400" height="200"></canvas>
+    <canvas id="tiltChart" width="400" height="200"></canvas>
+    <canvas id="strainChart" width="400" height="200"></canvas>
+    <canvas id="seismicChart" width="400" height="200"></canvas>
+    <canvas id="pressureChart" width="400" height="200"></canvas>
+    <canvas id="acousticChart" width="400" height="200"></canvas>
+</div>
+
+<!-- Right Sidebar -->
+<div class="card sidebar-right">
+   <!-- System Status -->
+<div class="card-header">System Status</div>
+<div id="alertStatus" class="alert alert-info" style="margin-top: 20px;">System Status: Normal</div>
+
+<!-- Sensor Explanations -->
+<div id="sensorStatus">
+    <div class="sensor-status">
+        <strong>Water Level:</strong>
+        <div id="waterLevelStatus" class="alert alert-info">Normal</div>
+        <p>Water level indicates the amount of water present. A higher value could signal risk of overflow.</p>
+    </div>
+    <div class="sensor-status">
+        <strong>Tilt:</strong>
+        <div id="tiltStatus" class="alert alert-info">Normal</div>
+        <p>Tilt measures the angle of the structure. A high tilt indicates potential structural instability.</p>
+    </div>
+    <div class="sensor-status">
+        <strong>Strain:</strong>
+        <div id="strainStatus" class="alert alert-info">Normal</div>
+        <p>Strain measures the deformation of the dam. High strain could indicate material fatigue.</p>
+    </div>
+    <div class="sensor-status">
+        <strong>Seismic Activity:</strong>
+        <div id="seismicStatus" class="alert alert-info">Normal</div>
+        <p>Seismic activity measures ground motion. Increased activity might signal impending dam failure.</p>
+    </div>
+    <div class="sensor-status">
+        <strong>Pressure:</strong>
+        <div id="pressureStatus" class="alert alert-info">Normal</div>
+        <p>Pressure indicates the force exerted on the dam structure. High pressure might indicate strain on the dam.</p>
+    </div>
+    <div class="sensor-status">
+        <strong>Acoustic Emissions:</strong>
+        <div id="acousticStatus" class="alert alert-info">Normal</div>
+        <p>Acoustic emissions measure sounds emitted by the dam. Unusual sounds may indicate structural damage.</p>
+    </div>
+
+
+<!-- CSS for Blinking Effect -->
+<style>
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.blink {
+    animation: blink 1s infinite;
+}
+</style>
+    </div>
+
+            <div class="card-header">Ask the Expert System</div>
+    <div class="chat-window" id="chatWindow" style="height: 200px;">
+
+
+
+
+        <!-- Chat messages would go here -->
+    </div>
+    <div class="input-group mb-3">
+        <input type="text" id="userQuery" class="form-control" placeholder="Ask a question...">
+        <div class="input-group-append">
+            <button class="btn btn-primary" id="askButton">Send</button>
+        </div>
+    </div>
+    <div class="card-header">Knowledge Acquisition</div>
+    <form id="acquisitionForm" enctype="multipart/form-data">
+        <div class="custom-file mb-3">
+            <input type="file" class="custom-file-input" id="fileInput"> <br>
+            <label class="custom-file-label" for="fileInput">Choose file</label><br>
+        </div>
+        <button type="submit" class="btn btn-primary">Acquire Knowledge</button>
+    </form>
+    
+            <div class="card-header" style="margin-top: 20px;">Quick Links</div>
+            <ul class="list-unstyled">
+                <li><a href="#" class="text-white">User Settings</a></li>
+                <li><a href="#" class="text-white">Help & Support</a></li>
+                <li><a href="#" class="text-white">System Logs</a></li>
+                <li><a href="#" class="text-white">Documentation</a></li>
+            </ul>
+            <div class="card-header">System Stats</div>
+            <div class="card-body">
+                <p class="card-text">CPU Usage: 30%</p>
+                <p class="card-text">Memory Usage: 50%</p>
+                <p class="card-text">Disk Space: 70% free</p>
+            </div>
+        </div>
+    </div>
+   
+  
+    <script src="js/app.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Handle user query submission
+            $('#askButton').on('click', function () {
+                var query = $('#userQuery').val();
+                if(query.trim() !== '') {
+                    appendMessage('user', query);
+                    $('#userQuery').val(''); // Clear input after sending
+        
+                    // Make an AJAX call to the server
+                    $.ajax({
+                        url: 'http://localhost:3000/',  // This should be your server endpoint
+                        type: 'POST',
+                        data: { message: query },
+                        success: function(response) {
+                            // Assuming the server sends back a response in JSON format with a 'message' field
+                            // Remove ' BACK' if present or handle as needed
+                            var aiResponse = response.message.replace(' BACK', '');
+                            appendMessage('ai', aiResponse);
+                        },
+                        error: function(xhr, status, error) {
+                            appendMessage('ai', 'Error: Could not get response from server.');
+                            console.error('Error:', error);
+                        }
+                    });
+                }
+            });
+        
+            function appendMessage(sender, message) {
+                var chatWindow = $('#chatWindow');
+                var messageClass = sender === 'ai' ? 'ai-message' : 'user-message';
+                chatWindow.append('<div class="chat-message"><div class="' + messageClass + '">' + message + '</div></div>');
+                chatWindow.scrollTop(chatWindow[0].scrollHeight); // Scroll to bottom
+            }
+        
+            // Handle sensor data upload (Unchanged)
+            $('#uploadForm').on('submit', function (e) {
+                e.preventDefault();
+                var formData = new FormData();
+                formData.append('file', $('#fileInput')[0].files[0]);
+        
+                // Simulating AJAX call for file upload
+                setTimeout(function() {
+                    alert("Data uploaded successfully (Simulated)");
+                }, 1000);
+            });
+        });
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>    
