@@ -249,35 +249,115 @@
                     <div class="input-group mb-3">
                         <input type="text" id="userQuery" class="form-control" placeholder="Ask a question...">
                         <div class="input-group-append">
-                            <button class="btn btn-primary" id="askButton">Send</button>
+                            <button class="btn btn-secondary" id="askButton">Send</button>
                         </div>
                     </div>
                     <div class="card-header">Knowledge Acquisition</div>
                     <form id="acquisitionForm" enctype="multipart/form-data">
-                        <div class="custom-file mb-3">
-                            <input type="file" class="custom-file-input" id="fileInput"> <br>
-                            <label class="custom-file-label" for="fileInput">Choose file</label><br>
+                        <div class="container mt-4">
+                    
+                            <!-- Water level input -->
+                            <div class="form-group">
+                                <label for="waterLevel">Water Level</label>
+                                <input type="number" class="form-control" id="waterLevel" placeholder="Enter water level" required>
+                            </div>
+                    
+                            <!-- Tilt input -->
+                            <div class="form-group">
+                                <label for="tilt">Tilt</label>
+                                <input type="number" class="form-control" id="tilt" placeholder="Enter tilt measurement" required>
+                            </div>
+                    
+                            <!-- Strain input -->
+                            <div class="form-group">
+                                <label for="strain">Strain</label>
+                                <input type="number" class="form-control" id="strain" placeholder="Enter strain value" required>
+                            </div>
+                    
+                            <!-- Seismic activity input -->
+                            <div class="form-group">
+                                <label for="seismicActivity">Seismic Activity</label>
+                                <input type="number" class="form-control" id="seismicActivity" placeholder="Enter seismic activity value" required>
+                            </div>
+                    
+                            <!-- Pressure input -->
+                            <div class="form-group">
+                                <label for="pressure">Pressure</label>
+                                <input type="number" class="form-control" id="pressure" placeholder="Enter pressure value" required>
+                            </div>
+                    
+                            <!-- Acoustic emissions input -->
+                            <div class="form-group">
+                                <label for="acousticEmissions">Acoustic Emissions</label>
+                                <input type="number" class="form-control" id="acousticEmissions" placeholder="Enter acoustic emissions level" required>
+                            </div>
+                    
+                            <!-- File upload -->
+                            <!-- <div class="custom-file mb-3">
+                                <input type="file" class="custom-file-input" id="fileInput">
+                                <label class="custom-file-label" for="fileInput">Choose file</label>
+                            </div> -->
+                    
+                            <!-- Submit button -->
+                            <button type="submit" class="btn btn-primary btn-block">Acquire Knowledge</button>
                         </div>
-                        <button type="submit" class="btn btn-primary">Acquire Knowledge</button>
                     </form>
                     
                     <div class="card-header" style="margin-top: 20px;">Quick Links</div>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-white">User Settings</a></li>
-                        <li><a href="#" class="text-white">Help & Support</a></li>
-                        <li><a href="#" class="text-white">System Logs</a></li>
-                        <li><a href="#" class="text-white">Documentation</a></li>
-                    </ul>
+                    
                     <div class="card-header">System Stats</div>
-                    <div class="card-body">
-                        <p class="card-text">CPU Usage: 30%</p>
-                        <p class="card-text">Memory Usage: 50%</p>
-                        <p class="card-text">Disk Space: 70% free</p>
-                    </div>
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                          <!-- <h5 class="card-title">System Stats</h5> -->
+                          <p id="cpuUsage" class="card-text">CPU Usage: Loading...</p>
+                          <p id="memoryUsage" class="card-text">Memory Usage: Loading...</p>
+                          <p id="diskSpace" class="card-text">Disk Space: Loading...</p>
+                        </div>
+                      </div>
                 </div>
             </div>
         </div>
     </div>
     <script src="app.js"></script>
+    <script>// Check if performance.memory is available (for memory usage)
+        if (performance.memory) {
+          setInterval(() => {
+            // Get memory usage stats (if available)
+            const totalMemory = performance.memory.totalJSHeapSize / 1024 / 1024; // in MB
+            const usedMemory = performance.memory.usedJSHeapSize / 1024 / 1024; // in MB
+            const freeMemory = totalMemory - usedMemory;
+        
+            // Update memory usage on page
+            $('#memoryUsage').text(`Used Memory: ${usedMemory.toFixed(2)} MB / ${totalMemory.toFixed(2)} MB`);
+            $('#freeMemory').text(`Free Memory: ${freeMemory.toFixed(2)} MB`);
+          }, 1000);
+        } else {
+          $('#memoryUsage').text('Memory usage data not available');
+        }
+        
+        // Indirect CPU usage via FPS (frames per second)
+        let lastFrameTime = performance.now();
+        
+        function checkCPUUsage() {
+          let currentTime = performance.now();
+          let timeDifference = currentTime - lastFrameTime;
+          let fps = 1000 / timeDifference; // Calculate FPS
+          
+          // Display an approximation of CPU load based on FPS (lower FPS = higher CPU usage)
+          $('#cpuUsage').text(`FPS (approx): ${fps.toFixed(2)} FPS`);
+        
+          lastFrameTime = currentTime;
+        }
+        
+        // Call checkCPUUsage every second
+        setInterval(checkCPUUsage, 1000);
+        
+        // Indirect Disk Space - Monitoring memory usage for a rough estimate
+        setInterval(() => {
+          const usedDiskSpace = (localStorage.length / 1024 / 1024).toFixed(2); // Rough estimate based on localStorage usage
+          $('#diskSpace').text(`Used Disk Space (localStorage): ${usedDiskSpace} MB`);
+        }, 1000);
+        
+      </script>
 </body>
 </html>
